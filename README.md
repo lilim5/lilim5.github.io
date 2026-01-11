@@ -1,67 +1,209 @@
 # lilim5.github.io
-// ===== Canvas Setup ===== const canvas = document.getElementById('gameCanvas'); const ctx = canvas.getContext('2d');
 
-// ===== Player ===== let player = { x: 375, y: 500, width: 50, height: 100, velocityY: 0, isJumping: false, isFlying: false, outfit: { hair:null, top:null, bottom:null, shoes:null } };
+A small browser game / interactive avatar project: a 2D runner-style scene where you can equip outfits on a base character, collect coins, avoid obstacles, and trigger particle effects (dance, fly, etc.). This repository contains the static website (HTML/CSS/JS) and assets for the game.
 
-// ===== Score ===== let coinsCollected = 0; const coinDisplay = document.getElementById('coin-count');
+---
 
-// ===== Base Character ===== let baseImage = new Image(); baseImage.src = 'assets/characters/base.png';
+## Features
 
-// ===== Outfit Equip Functions ===== function equipHair(name){ loadOutfitLayer('hair', name); } function equipTop(name){ loadOutfitLayer('top', name); } function equipBottom(name){ loadOutfitLayer('bottom', name); } function equipShoes(name){ loadOutfitLayer('shoes', name); }
+- Equipable outfit layers (hair, top, bottom, shoes)
+- Player movement: left / right, jump
+- Collectible coins and obstacles
+- Simple particle effects (sparkles, dance, fly)
+- Background gradient and runway stripes
+- Sound effects and background music
 
-function loadOutfitLayer(type, name){ let img = new Image(); img.src = assets/clothes/${type}/${name}.png; player.outfit[type] = img; }
+---
 
-// ===== Start Menu Buttons ===== const startMenu = document.getElementById('start-menu'); const gameContainer = document.getElementById('game-container'); const closetUI = document.getElementById('closet-ui');
+## Demo / Screenshot
 
-document.getElementById('play-button').addEventListener('click', ()=>{ startMenu.style.display='none'; gameContainer.style.display='block'; closetUI.style.display='none'; bgMusic.play().catch(()=>{}); // Safely handle mobile autoplay requestAnimationFrame(update); // Start game loop });
+Place a screenshot or GIF in the repository `assets/` and reference it here. Example:
 
-document.getElementById('closet-button').addEventListener('click', ()=>{ startMenu.style.display='none'; gameContainer.style.display='block'; closetUI.style.display='block'; });
+![Game banner](assets/screenshots/banner.png)
 
-// ===== Sounds ===== let bgMusic = new Audio('assets/music/background.mp3'); bgMusic.loop = true; bgMusic.volume = 0.5;
+(Replace the image above with your actual file path.)
 
-let jumpSound = new Audio('assets/music/jump.mp3'); let coinSound = new Audio('assets/music/coin.mp3'); let danceSound = new Audio('assets/music/dance.mp3');
+---
 
-document.addEventListener('keydown', (e)=>{ if(e.key==='ArrowUp' && !player.isJumping){ player.velocityY=-12; player.isJumping=true; jumpSound.play(); } if(e.key==='ArrowLeft') player.x -= 10; if(e.key==='ArrowRight') player.x += 10; if(e.key==='f') flyEffect(); if(e.key==='d'){ danceEffect(); danceSound.play(); } });
+## Getting started
 
-// ===== Particles ===== let particles = []; function spawnParticle(x,y,color){ particles.push({x,y,vx:(Math.random()-0.5)*2, vy:-Math.random()*2, size:2+Math.random()*3, color, life:30}); } function updateParticles(){ particles.forEach((p,i)=>{ p.x+=p.vx; p.y+=p.vy; p.life--; ctx.fillStyle=p.color; ctx.fillRect(p.x,p.y,p.size,p.size); if(p.life<=0) particles.splice(i,1); }); }
+Prerequisites:
+- Modern web browser (Chrome, Firefox, Edge, Safari)
+- Optional: a small static server for local testing (recommended to avoid CORS with audio/image loading)
 
-// ===== Effects ===== function flyEffect(){ player.isFlying=true; let interval = setInterval(()=>{ spawnParticle(player.x+25, player.y+50,'white'); player.y -= 3; // Fly upward while flying if(player.y < 50) player.y = 50; },50); setTimeout(()=>{ player.isFlying=false; clearInterval(interval); },3000); }
+Quick start:
 
-function danceEffect(){ for(let i=0;i<15;i++){ spawnParticle(player.x+Math.random()*50, player.y+Math.random()*50, hsl(${Math.random()*360},100%,50%)); } coinsCollected += 5; coinDisplay.innerText = coinsCollected; }
+1. Clone the repo:
+   ```
+   git clone https://github.com/lilim5/lilim5.github.io.git
+   cd lilim5.github.io
+   ```
 
-// ===== Draw Background ===== let bgY=0; function drawBackground(){ let gradient = ctx.createLinearGradient(0,0,0,canvas.height); gradient.addColorStop(0,'#ff9de0'); gradient.addColorStop(1,'#ff63c4'); ctx.fillStyle=gradient; ctx.fillRect(0,0,canvas.width,canvas.height);
+2. Open `index.html` in your browser, or run a simple server:
+   - Python 3:
+     ```
+     python -m http.server 8000
+     ```
+     then open http://localhost:8000
 
-// Runway stripes ctx.fillStyle='white'; for(let i=0;i<20;i++){ ctx.fillRect(i40,(bgY+i30)%canvas.height,20,10); } bgY += 2; }
+   - VS Code: use the Live Server extension.
 
-// ===== Draw Outfit Layer ===== function drawOutfitLayer(type){ if(player.outfit[type]) ctx.drawImage(player.outfit[type], player.x, player.y, player.width, player.height); }
+---
 
-// ===== Game Loop ===== let obstacles = []; let coins = [];
+## Controls
 
-function spawnObstacle(){ obstacles.push({x:Math.random()*750,y:-50,width:50,height:50,color:'red'}); } function spawnCoin(){ coins.push({x:Math.random()*750,y:-50,width:30,height:30,color:'gold'}); }
+- ArrowLeft / ArrowRight — move left / right
+- ArrowUp — jump
+- UI buttons: Play, Closet (open outfit UI), etc.
 
-setInterval(spawnObstacle,2000); setInterval(spawnCoin,1500);
+(Exact UI interactions depend on the HTML buttons in `index.html`.)
 
-function update(){ ctx.clearRect(0,0,canvas.width,canvas.height);
+---
 
-drawBackground();
+## Project structure (suggested)
 
-// Player physics if(!player.isFlying){ player.velocityY+=0.5; player.y+=player.velocityY; } if(player.y>500){ player.y=500; player.velocityY=0; player.isJumping=false; }
+- index.html
+- css/
+  - styles.css
+- js/
+  - main.js
+- assets/
+  - characters/
+    - base.png
+  - clothes/
+    - hair/
+    - top/
+    - bottom/
+    - shoes/
+  - music/
+  - sounds/
+  - screenshots/
 
-// Keep player within canvas horizontally if(player.x<0) player.x=0; if(player.x+player.width>canvas.width) player.x=canvas.width-player.width;
+---
 
-// Draw player & outfits ctx.drawImage(baseImage, player.x, player.y, player.width, player.height); drawOutfitLayer('bottom'); drawOutfitLayer('top'); drawOutfitLayer('hair'); drawOutfitLayer('shoes');
+## Important snippets
 
-// Obstacles obstacles.forEach((obs,i)=>{ obs.y+=5; ctx.fillStyle=obs.color; ctx.fillRect(obs.x, obs.y, obs.width, obs.height); if(player.x<obs.x+obs.width && player.x+player.width>obs.x && player.y<obs.y+obs.height && player.y+player.height>obs.y){ alert("Game Over!"); obstacles=[]; coins=[]; player.y=500; coinsCollected=0; coinDisplay.innerText=coinsCollected; } if(obs.y>canvas.height) obstacles.splice(i,1); });
+Below are corrected and safe examples of the JavaScript functions used by the game. They are provided here as reference — the actual game code should live in `js/main.js`.
 
-// Coins coins.forEach((coin,i)=>{ coin.y+=5; ctx.fillStyle=coin.color; ctx.fillRect(coin.x,coin.y,coin.width,coin.height); if(player.x<coin.x+coin.width && player.x+player.width>coin.x && player.y<coin.y+coin.height && player.y+player.height>coin.y){ coins.splice(i,1); coinsCollected++; coinDisplay.innerText=coinsCollected; spawnParticle(player.x+25,player.y+50,'white'); coinSound.play(); } if(coin.y>canvas.height) coins.splice(i,1); });
+```javascript
+// ===== Canvas Setup =====
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
 
-updateParticles();
+// ===== Player =====
+let player = {
+  x: 375,
+  y: 500,
+  width: 50,
+  height: 100,
+  velocityY: 0,
+  isJumping: false,
+  isFlying: false,
+  outfit: { hair: null, top: null, bottom: null, shoes: null }
+};
 
-requestAnimationFrame(update); }![Lucid_Origin_Heres_your_smaller_dark_glamorous_Laxco_banner_op_3](https://github.com/user-attachments/assets/e1f9e2ab-c58f-483e-9603-7a28269cf39f)document.getElementById('play-button').addEventListener('click', ()=>{
-  ...
-  update(); // Start game loop
-});if(player.x<0) player.x=0;
-if(player.x+player.width>canvas.width) player.x=canvas.width-player.width;document.addEventListener('keydown', e => {
-  if(e.key==='ArrowLeft') player.x -= 10;
-  if(e.key==='ArrowRight') player.x += 10;
-});if(player.isFlying) player.y -= 3;
+// ===== Score =====
+let coinsCollected = 0;
+const coinDisplay = document.getElementById('coin-count');
+
+// ===== Base Character =====
+const baseImage = new Image();
+baseImage.src = 'assets/characters/base.png';
+
+// ===== Outfit Equip Functions =====
+function loadOutfitLayer(type, name) {
+  const img = new Image();
+  img.src = `assets/clothes/${type}/${name}.png`;
+  player.outfit[type] = img;
+}
+function equipHair(name) { loadOutfitLayer('hair', name); }
+function equipTop(name)  { loadOutfitLayer('top', name); }
+function equipBottom(name){ loadOutfitLayer('bottom', name); }
+function equipShoes(name){ loadOutfitLayer('shoes', name); }
+
+// ===== Draw Outfit Layer =====
+function drawOutfitLayer(type) {
+  const img = player.outfit[type];
+  if (img && img.complete) {
+    ctx.drawImage(img, player.x, player.y, player.width, player.height);
+  }
+}
+
+// ===== Sounds =====
+const bgMusic = new Audio('assets/music/background.mp3');
+bgMusic.loop = true;
+bgMusic.volume = 0.5;
+const jumpSound = new Audio('assets/music/jump.mp3');
+const coinSound = new Audio('assets/music/coin.mp3');
+
+// ===== Controls =====
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowUp' && !player.isJumping) {
+    player.velocityY = -12;
+    player.isJumping = true;
+    jumpSound.play().catch(() => {});
+  }
+  if (e.key === 'ArrowLeft') {
+    player.x = Math.max(0, player.x - 10);
+  }
+  if (e.key === 'ArrowRight') {
+    player.x = Math.min(canvas.width - player.width, player.x + 10);
+  }
+});
+
+// ===== Simple physics + game loop (sketch) =====
+function update() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // background, obstacles, coins, particles etc. would be drawn here...
+
+  // player gravity
+  if (!player.isFlying) {
+    player.velocityY += 0.5; // gravity
+    player.y += player.velocityY;
+  } else {
+    player.y -= 3; // flying upward while flying
+  }
+
+  // ground collision
+  if (player.y > 500) {
+    player.y = 500;
+    player.velocityY = 0;
+    player.isJumping = false;
+  }
+
+  // draw player and outfit layers
+  ctx.drawImage(baseImage, player.x, player.y, player.width, player.height);
+  drawOutfitLayer('bottom');
+  drawOutfitLayer('top');
+  drawOutfitLayer('hair');
+  drawOutfitLayer('shoes');
+
+  requestAnimationFrame(update);
+}
+```
+
+---
+
+## Tips & notes
+
+- Keep outfit image sizes consistent with the base character (same dimensions) for proper alignment.
+- Preload assets (images/audio) where possible to avoid visual popping or playback delays.
+- If audio won't play automatically, many browsers require a user interaction (click) before audio can start.
+
+---
+
+## Contributing
+
+Contributions are welcome. Please open issues for bugs and feature requests, and submit pull requests for fixes or improvements.
+
+Ideas:
+- Add more outfit items and categories
+- Improve collision handling and obstacle variety
+- Add mobile touch controls
+
+---
+
+## License
+
+This project is provided as-is. Add a LICENSE file if you want to apply a specific license (MIT, Apache-2.0, etc.).
