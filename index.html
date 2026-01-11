@@ -7,16 +7,27 @@
   <style>
     html,body { height:100%; margin:0; background:#111; color:#eee; font-family:system-ui,Segoe UI,Roboto,Arial; }
     #gameCanvas { display:block; margin:0 auto; background:#222; touch-action: none; }
-    .hint { position:fixed; left:8px; top:8px; opacity:0.85; }
+    .hint { position:fixed; left:8px; top:8px; opacity:0.95; }
     /* simple on-screen buttons for touch */
     .touch-btn { position:fixed; bottom:24px; width:72px; height:72px; border-radius:12px; background:#ffffff22; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; user-select:none; }
     #leftBtn { left:24px; }
     #rightBtn { left:112px; }
     #jumpBtn { right:24px; }
+    /* top-right controls */
+    .top-controls { position:fixed; right:12px; top:8px; display:flex; gap:8px; align-items:center; }
+    .btn { background:#ffffff18; color:#fff; border:0; padding:6px 10px; border-radius:8px; cursor:pointer; font-weight:600; }
+    .btn.active { background:#66c2ff; color:#000; }
+    .mute { width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:8px; }
   </style>
 </head>
 <body>
   <div class="hint">Arrows / A D to move, Space to jump or restart</div>
+  <div class="top-controls">
+    <button id="easyBtn" class="btn">Easy</button>
+    <button id="normalBtn" class="btn">Normal</button>
+    <button id="hardBtn" class="btn">Hard</button>
+    <button id="muteBtn" class="btn mute">🔊</button>
+  </div>
   <canvas id="gameCanvas" width="800" height="450"></canvas>
 
   <!-- Touch controls (shown only on touch devices) -->
