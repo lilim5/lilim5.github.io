@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple Game</title>
+  <style>
+    html,body { height:100%; margin:0; background:#111; color:#eee; font-family:system-ui,Segoe UI,Roboto,Arial; }
+    #gameCanvas { display:block; margin:0 auto; background:#222; touch-action: none; }
+    .hint { position:fixed; left:8px; top:8px; opacity:0.85; }
+    /* simple on-screen buttons for touch */
+    .touch-btn { position:fixed; bottom:24px; width:72px; height:72px; border-radius:12px; background:#ffffff22; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; user-select:none; }
+    #leftBtn { left:24px; }
+    #rightBtn { left:112px; }
+    #jumpBtn { right:24px; }
+  </style>
+</head>
+<body>
+  <div class="hint">Arrows / A D to move, Space to jump or restart</div>
+  <canvas id="gameCanvas" width="800" height="450"></canvas>
+
+  <!-- Touch controls (shown only on touch devices) -->
+  <div id="leftBtn" class="touch-btn">◀</div>
+  <div id="rightBtn" class="touch-btn">▶</div>
+  <div id="jumpBtn" class="touch-btn">▲</div>
+
+  <script src="game.js"></script>
+</body>
+</html>
